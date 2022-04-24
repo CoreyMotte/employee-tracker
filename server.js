@@ -2,6 +2,7 @@ const inquirer = require("inquirer");
 const mysql = require("mysql2");
 const consoleTable = require("console.table");
 
+// establish connection for SQL database
 const connection = mysql.createConnection({
     host: 'localhost',
     port: 3306,
@@ -14,9 +15,29 @@ connection.connect(function(err) {
     if (err) throw err;
     console.log("\n Employee Database Management System \n");
     sysMenu();
+    queryDB();
 });
 
+function queryDB() {
+    // function to get current roles, departments, and employees from database and store them as variables for later reference
+    connection.query ("SELECT * from role", function(err, res) {
+        roles = res.map(role => ({name: role.title, value: role.id}));
+    });
+
+    connection.query ("SELECT * from department", function(err, res) {
+        depts = res.map(dept => ({name: dept.title, value: dept.id}));
+    });
+
+    connection.query("SELECT * from employee", function(error, res) {
+        employees = res.map(employee => ({
+          name: `${employee.first_name} ${employee.last_name}`,
+          value: employee.id
+        }));
+    });
+}
+
 function sysMenu() {
+    // main menu for the application
     inquirer
         .prompt({
             name: "action",
@@ -48,7 +69,7 @@ function sysMenu() {
                     break;
 
                 case "Add Employee":
-
+                    addEmployee();
                     break;
                 
                 case "Add Department":
@@ -98,4 +119,42 @@ function viewRoles() {
         console.table(res);
         sysMenu();
     });
+}
+
+function addEmployee() {
+    queryDB();
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "first_name",
+                message: "Please input their FIRST name:"
+            },
+            {
+                type: "input",
+                name: "last_name",
+                message: "Please input their LAST name:"
+            },
+            {
+                type: "list",
+                name: "role",
+                message: "Please select their role:",
+                choices: roles
+            }
+        ])
+        .then(function(response) {
+            var query = connection.query(
+                "INSERT INTO employee SET ?",
+                {
+                    first_name: response.first_name,
+                    last_name: response.last_name,
+                    role_id: response.role
+                },
+                function(err, res) {
+                    if (err) throw err;
+                    console.table("\n New Employee Added! \n");
+                    sysMenu();
+                }
+            )
+        })
 }
