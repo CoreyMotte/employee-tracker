@@ -36,7 +36,7 @@ function sysMenu() {
         .then(function(response) {
             switch (response.action) {
                 case "View All Employees":
-
+                    viewAllEmployees();
                     break;
 
                 case "View All Departments":
@@ -69,3 +69,12 @@ function sysMenu() {
             }
         });
 };
+
+function viewAllEmployees() {
+    console.log("");
+    var query = "SELECT employee.id, first_name AS firstname, last_name AS lastname, title AS role, name AS department, salary as salary FROM employee INNER JOIN role ON employee.role_id = role.id INNER JOIN department ON role.department_id = department.id;";
+    connection.query(query, function(err, res) {
+        if (err) throw err;
+        console.table(res);
+    })
+}
