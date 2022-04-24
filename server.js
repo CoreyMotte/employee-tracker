@@ -73,7 +73,7 @@ function sysMenu() {
                     break;
                 
                 case "Add Department":
-
+                    addDepartment();
                     break;
 
                 case "Add Role":
@@ -153,8 +153,35 @@ function addEmployee() {
                 function(err, res) {
                     if (err) throw err;
                     console.table("\n New Employee Added! \n");
+                    queryDB();
                     sysMenu();
                 }
             )
         })
+}
+
+function addDepartment() {
+    queryDB();
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "newdept",
+                message: "Please enter the name of the new department:"
+            }
+        ])
+        .then(function(response) {
+            var query = connection.query(
+                "INSERT INTO department SET ?",
+                {
+                    name: response.newdept
+                },
+                function(err, res) {
+                    if (err) throw err;
+                    console.log("\n New Department Added! \n");
+                    queryDB();
+                    sysMenu();
+                }
+            )
+        });
 }
