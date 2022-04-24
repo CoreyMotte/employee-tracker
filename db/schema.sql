@@ -24,4 +24,4 @@ CREATE TABLE employee (
     manager_id INTEGER,
     FOREIGN KEY (role_id) REFERENCES role(id),
     FOREIGN KEY (manager_id) REFERENCES role(id),
-)
+);
