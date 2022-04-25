@@ -56,6 +56,7 @@ function sysMenu() {
         })
         .then(function(response) {
             switch (response.action) {
+                // switch statement to handle each option of the menu
                 case "View All Employees":
                     viewEmployees();
                     break;
@@ -77,11 +78,11 @@ function sysMenu() {
                     break;
 
                 case "Add Role":
-
+                    addRole();
                     break;
                 
                 case "Update Employee Role":
-
+                    updateRole();
                     break;
 
                 case "Exit":
@@ -89,7 +90,7 @@ function sysMenu() {
                     break;
             }
         });
-};
+}
 
 function viewEmployees() {
     console.log("");
@@ -185,3 +186,80 @@ function addDepartment() {
             )
         });
 }
+
+function addRole() {
+    queryDB();
+    inquirer
+        .prompt([
+            {
+                type: "input",
+                name: "new_role",
+                message: "Please input the name of the new role:"
+            },
+            {
+                type: "input",
+                name: "salary",
+                message: "Please input the salary of this role:"
+            },
+            {
+                type: "list",
+                name: "dept",
+                message: "Please select the department this role is in:",
+                choices: depts
+            }
+        ])
+        .then(function(response) {
+            var query = connection.query(
+                "INSERT INTO role SET ?",
+                {
+                    title: response.new_role,
+                    salary: response.salary,
+                    department_id: response.dept
+                },
+                function(err, res) {
+                    if (err) throw err;
+                    console.table("\n New Role Added! \n");
+                    queryDB();
+                    sysMenu();
+                }
+            )
+        })
+}
+
+function updateRole() {
+    queryDB();
+    inquirer
+      .prompt([
+        {
+          name: "employee",
+          type: "list",
+          message: "Which employee would you like to update?",
+          choices: employees
+        },
+        {
+          name: "role",
+          type: "list",
+          message: "Which role should be assigned to this employee?",
+          choices: roles
+        }
+      ])
+      .then(function(response) {
+        var query = connection.query(
+          "UPDATE employee SET ? WHERE ?",
+          [
+            {
+              role_id: response.role
+            },
+            {
+              id: response.employee
+            }
+          ],
+          function(err, res) {
+            if (err) throw err;
+            console.table("\n Employee Role Updated! \n");
+            queryDB();
+            sysMenu();
+          }
+        );
+      });
+  }
