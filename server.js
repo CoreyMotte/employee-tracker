@@ -44,12 +44,12 @@ function sysMenu() {
             type: "list",
             message: "Please select the desired operation:",
             choices: [
-                "View All Employees",
                 "View All Departments",
                 "View All Roles",
-                "Add Employee",
+                "View All Employees",
                 "Add Department",
                 "Add Role",
+                "Add Employee",
                 "Update Employee Role",
                 "Exit"
             ]
