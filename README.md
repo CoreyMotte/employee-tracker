@@ -17,7 +17,7 @@
   ## Installation
   Clone the repository.
   ## Usage
-  A demonstration can be found
+  A demonstration can be found [here](https://youtu.be/2MjQp532L3c).
   ## How to Contribute
   [Contributor Covenant](https://www.contributor-covenant.org/)  
   N/A
